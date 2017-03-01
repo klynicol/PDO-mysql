@@ -7,9 +7,11 @@
 
 
 
+
 class Mysql
 {
 	public $error;		//Holds the last error
+
 
 	public $lastQuerry;		//Holds the last query
 	public $result;			//Holds the MySWL query result
@@ -33,6 +35,7 @@ class Mysql
 	 * *******************/
 	
 	function __construct($database, $userName, $password, $hostName, $persistant){
+
 		$this->database = $database;
 		$this->userName = $userName;
 		$this->password = $password;
@@ -58,6 +61,7 @@ class Mysql
 	private function connect(){
 		if(!$this->pdo){
 
+
 			//switch globals to local params
 			$host = $this->hostName;
 			$port = $this->port;
@@ -77,6 +81,7 @@ class Mysql
 			}
 			else{
 				try{
+
 					$this->pdo = new PDO("mysql:host=$host;port=$port;dbname=$database;charset=utf8", $this->userName, $this->password);
 					return true;
 				} catch(PDOException $e){
@@ -94,6 +99,7 @@ class Mysql
 		}
 	}
 
+
 	/* *******************
 	 * Public Functions *
 	 * *******************/
@@ -107,6 +113,7 @@ class Mysql
 		$statement->execute();
 		return var_dump($statement->fetchAll(PDO::FETCH_ASSOC));
 	}
+
 
 
 }

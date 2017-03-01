@@ -7,6 +7,7 @@
 
 
 
+
 class User{
 
 	public $error; //Holds the errors
@@ -72,3 +73,4 @@ class User{
 		header("Location: $url");
 	}
 }
+
