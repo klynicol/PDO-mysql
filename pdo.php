@@ -5,9 +5,14 @@
  *  Writen originally for EdibleIndex.com
 */
 
+
+
+
 class Mysql
 {
-	public $lastError;		//Holds the last error
+	public $error;		//Holds the last error
+
+
 	public $lastQuerry;		//Holds the last query
 	public $result;			//Holds the MySWL query result
 	public $records;		//Holds the total number of records returned
@@ -30,7 +35,8 @@ class Mysql
 	 * *******************/
 	
 	function __construct($database, $userName, $password, $hostName, $persistant){
-		$this->databse = $database;
+
+		$this->database = $database;
 		$this->userName = $userName;
 		$this->password = $password;
 		$this->hostName = $hostName;
@@ -54,9 +60,16 @@ class Mysql
 
 	private function connect(){
 		if(!$this->pdo){
+
+
+			//switch globals to local params
+			$host = $this->hostName;
+			$port = $this->port;
+			$database = $this->database;
+
 			if($this->persistant){
 				try{
-					$this->$pdo = new PDO("mysql:host={$this->hostName};port={$this->port};dbname={$this->database};charset=utf8", $this->userName, $this->password, array(PDO::ATTR_PERSISTENT => true));
+					$this->pdo = new PDO("mysql:host=$host;port=$port;dbname=$database;charset=utf8", $this->userName, $this->password, array(PDO::ATTR_PERSISTENT => true));
 					return true;
 				} catch(PDOException $e){
 					$message = 'Error: ' . $e->getMessage() . "\n";
@@ -68,12 +81,13 @@ class Mysql
 			}
 			else{
 				try{
-					$this->$pdo = new PDO("mysql:host={$this->hostName};port={$this->port};dbname={$this->database};charset=utf8", $this->userName, $this->password);
+
+					$this->pdo = new PDO("mysql:host=$host;port=$port;dbname=$database;charset=utf8", $this->userName, $this->password);
 					return true;
 				} catch(PDOException $e){
 					$message = 'Error: ' . $e->getMessage() . "\n";
 					$this->lastError = $message;
-					print $messsage;
+					print $message;
 					die($message);
 					return false;
 				}	
@@ -83,6 +97,21 @@ class Mysql
 				$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 				return true;
 		}
+	}
+
+
+	/* *******************
+	 * Public Functions *
+	 * *******************/
+
+	public function getPDO(){
+		return $this->pdo;
+	}
+
+	public function fetchAll($table){
+		$statement = $this->pdo->prepare("SELECT * FROM $table");
+		$statement->execute();
+		return var_dump($statement->fetchAll(PDO::FETCH_ASSOC));
 	}
 
 
